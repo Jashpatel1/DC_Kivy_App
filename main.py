@@ -7,52 +7,50 @@ import socket
 #import sys
 
 class TestApp(App):
-    # Create a TCP/IP socket for client
-    client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-    # Connect the socket to the port where the server is listening
-    server_address = ('localhost', 10000)
-
     def __init__(self):
         App.__init__(self)
-        
-        Clock.schedule_once(Clock.schedule_interval(self.send_client, 0.3),2)
+        # Create a TCP/IP socket for client
+        self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+        # Connect the socket to the port where the server is listening
+        self.server_address = ('localhost', 10000)
         self.l = ""
 
-        def build(self):
-            layout = FloatLayout()
+    def build(self):
+        layout = FloatLayout()
 
-            connectbtn = Button(text="Connect", pos_hint={'center_x': 0.2, 'center_y': 0.9},
+        connectbtn = Button(text="Connect", pos_hint={'center_x': 0.2, 'center_y': 0.9},
                                 size_hint=(.15, .1), on_press=self.cconnect)
-            layout.add_widget(connectbtn)
+        layout.add_widget(connectbtn)
 
-            disconnectbtn = Button(text="Disconnect", pos_hint={'center_x': 0.8, 'center_y': 0.9},
+        disconnectbtn = Button(text="Disconnect", pos_hint={'center_x': 0.8, 'center_y': 0.9},
                                 size_hint=(.15, .1), on_press=self.cdisconnect)
-            layout.add_widget(disconnectbtn)
+        layout.add_widget(disconnectbtn)
 
-            upbtn = Button(text='Up', font_size=20, pos_hint={'center_x': 0.5, 'center_y': 0.65},
+        upbtn = Button(text='Up', font_size=20, pos_hint={'center_x': 0.5, 'center_y': 0.65},
                         size_hint=(.1, .1), on_press=self.up_press)
-            layout.add_widget(upbtn)
+        layout.add_widget(upbtn)
 
-            dwnbtn = Button(text='Down', font_size=20, pos_hint={'center_x': 0.5, 'center_y': 0.35},
+        dwnbtn = Button(text='Down', font_size=20, pos_hint={'center_x': 0.5, 'center_y': 0.35},
                             size_hint=(.1, .1), on_press=self.dwn_press)
-            layout.add_widget(dwnbtn)
+        layout.add_widget(dwnbtn)
 
-            rbtn = Button(text='Right', font_size=20, pos_hint={'center_x': 0.65, 'center_y': 0.5},
-                        size_hint=(.1, .1), on_press=self.r_press)
-            layout.add_widget(rbtn)
+        rbtn = Button(text='Right', font_size=20, pos_hint={'center_x': 0.65, 'center_y': 0.5},
+                    size_hint=(.1, .1), on_press=self.r_press)
+        layout.add_widget(rbtn)
 
-            lbtn = Button(text='Left', font_size=20, pos_hint={'center_x': 0.35, 'center_y': 0.5},
-                        size_hint=(.1, .1), on_press=self.l_press)
-            layout.add_widget(lbtn)
-            return layout
+        lbtn = Button(text='Left', font_size=20, pos_hint={'center_x': 0.35, 'center_y': 0.5},
+                    size_hint=(.1, .1), on_press=self.l_press)
+        layout.add_widget(lbtn)
+        return layout
 
     def cconnect(self, obj):
         self.client.connect(self.server_address)
         print("Connecting to localhost, port 10000")
+        Clock.schedule_once(Clock.schedule_interval(self.send_client, 0.3), 2)
 
     def cdisconnect(self, obj):
-        self.client.disconnect()
+        self.client.close()
 
     def up_press(self, obj):
         #l.append(+1)
