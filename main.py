@@ -49,7 +49,7 @@ class TestApp(App):
 
     def cconnect(self, obj):
         self.client.connect(self.server_address)
-    print("Connecting to localhost, port 10000")
+        print("Connecting to localhost, port 10000")
 
     def cdisconnect(self, obj):
         self.client.disconnect()
