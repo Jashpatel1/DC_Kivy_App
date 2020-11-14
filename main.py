@@ -9,12 +9,8 @@ import socket
 class TestApp(App):
     def __init__(self):
         App.__init__(self)
-        # Create a TCP/IP socket for client
-        self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-        # Connect the socket to the port where the server is listening
-        self.server_address = ('localhost', 10000)
         self.l = ""
+        self.showData = ""
 
     def build(self):
         layout = FloatLayout()
@@ -45,12 +41,25 @@ class TestApp(App):
         return layout
 
     def cconnect(self, obj):
-        self.client.connect(self.server_address)
-        print("Connecting to localhost, port 10000")
-        Clock.schedule_once(Clock.schedule_interval(self.send_client, 0.3), 2)
+        try:
+            # Create a TCP/IP socket for client
+            self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+            # Connect the socket to the port where the server is listening
+            self.server_address = ('localhost', 10000)
+            self.client.connect(self.server_address)
+            print("Connecting to localhost, port 10000")
+            self.showData = "Connected !"
+            Clock.schedule_interval(self.send_client, 0.3)
+        except:
+            self.showData = "Cannot Connect to Server.."
+            print("Cannot Connect to Server..")
 
     def cdisconnect(self, obj):
+        Clock.unschedule(self.send_client)
         self.client.close()
+        self.showData = "Not Connected to server.."
+        print("Disconnected from the Server..")
 
     def up_press(self, obj):
         #l.append(+1)
@@ -81,11 +90,10 @@ class TestApp(App):
         self.l = ""
         try:
             print("Sending Message", val)
-
             # Send string as bytes to server
             self.client.sendall(str.encode(val))
-
-        finally:
-            message = ""
+        except:
+            self.showData = "Error while sending data to server.."
+            print("Error while sending data to server..")
 
 TestApp().run()
