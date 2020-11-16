@@ -24,6 +24,10 @@ class TestApp(App):
         self.flag = False
         self.layout = FloatLayout()
         self.new_button = Button(background_color = (0,0,0,0),text = 'Connected to Server!',color = (0,0,0,1),pos_hint = {'center_x': 0.5, 'center_y' : 0.8},size_hint= (.20,.1))
+        self.serverError = Button(background_color=(0, 0, 0, 0), text='Cannot connect to Server!', color=(0, 0, 0, 1),
+                                 pos_hint={'center_x': 0.5, 'center_y': 0.8}, size_hint=(.20, .1))
+        self.serverDisconnected = Button(background_color=(0, 0, 0, 0), text='Disconnected from Server!', color=(0, 0, 0, 1),
+                                 pos_hint={'center_x': 0.5, 'center_y': 0.8}, size_hint=(.20, .1))
         self.img =  Image(source = 'bground.jpg',allow_stretch = True, keep_ratio = True)
 
     def build(self):
@@ -65,16 +69,18 @@ class TestApp(App):
             self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
             # Connect the socket to the port where the server is listening
-            self.server_address = ('localhost', 10000)
+            self.server_address = ('192.168.0.104', 10000)
             self.client.connect(self.server_address)
             print("Connecting to localhost, port 10000")
-            conn = Label(text="Connected")
-            # self.layout.add_widget(conn)
-            self.showData = "Connected !"
+            # conn = Label(text="Connected")
+            self.layout.remove_widget(self.serverDisconnected)
+            self.layout.remove_widget(self.serverError)
             self.layout.add_widget(self.new_button)
             Clock.schedule_interval(self.send_client, 0.3)
         except:
-            self.showData = "Cannot Connect to Server.."
+            self.layout.remove_widget(self.new_button)
+            self.layout.remove_widget(self.serverDisconnected)
+            self.layout.add_widget(self.serverError)
             print("Cannot Connect to Server..")
 
     def cdisconnect(self, obj):
@@ -82,6 +88,8 @@ class TestApp(App):
         self.client.close()
         self.showData = "Not Connected to server.."
         self.layout.remove_widget(self.new_button)
+        self.layout.remove_widget(self.serverError)
+        self.layout.add_widget(self.serverDisconnected)
         print("Disconnected from the Server..")
 
     def up_press(self, obj):
